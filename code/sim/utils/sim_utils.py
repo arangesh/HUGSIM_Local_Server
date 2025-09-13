@@ -56,11 +56,16 @@ def traj2control(plan_traj, info):
         x to right, y to forward and z to upward
     """
     plan_traj_stats = np.zeros((plan_traj.shape[0]+1, 5))
-    plan_traj_stats[1:, :2] = plan_traj[:, [1,0]]
-    prev_a, prev_b = 0, 0
-    for i, (a, b) in enumerate(plan_traj):
-        rot = np.arctan((b - prev_b)/(a - prev_a))
-        plan_traj_stats[i+1, 2] = rot
+    if plan_traj.shape[1] > 2:
+        # Use heading if provided.
+        plan_traj_stats[1:, :3] = plan_traj[:, [1,0,2]]
+    else:
+        # If heading is not provided, use the waypoints to compute heading.
+        plan_traj_stats[1:, :2] = plan_traj[:, [1,0]]
+        prev_a, prev_b = 0, 0
+        for i, (a, b) in enumerate(plan_traj):
+            rot = np.arctan((b - prev_b)/(a - prev_a))
+            plan_traj_stats[i+1, 2] = rot
     curr_stat = np.array(
         [0, 0, 0, info['ego_velo'], info['ego_steer']]
     )
