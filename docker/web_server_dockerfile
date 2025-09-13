@@ -50,15 +50,18 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && rm -f Miniconda3-latest-Linux-x86_64.sh
 ENV PATH /app/miniconda/bin:$PATH
 
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
 RUN conda create -p /app/env -y python=3.11
 
 SHELL ["conda", "run","--no-capture-output", "-p","/app/env", "/bin/bash", "-c"]
 
 COPY --chown=1000:1000 . /app/
 
-ENV TCNN_CUDA_ARCHITECTURES 75
+ENV TCNN_CUDA_ARCHITECTURES 89
 
-ENV TORCH_CUDA_ARCH_LIST "7.5"
+ENV TORCH_CUDA_ARCH_LIST "8.9"
 
 RUN curl -fsSL https://pixi.sh/install.sh | sh
 

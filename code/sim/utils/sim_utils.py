@@ -56,9 +56,10 @@ def traj2control(plan_traj, info):
         x to right, y to forward and z to upward
     """
     plan_traj_stats = np.zeros((plan_traj.shape[0]+1, 5))
-    if plan_traj.shape[1] > 2:
+    plan_traj_stats[1:, :2] = plan_traj[:, [1,0]]
+    if plan_traj.shape[1] == 4:
         # Use heading if provided.
-        plan_traj_stats[1:, :3] = plan_traj[:, [1,0,2]]
+        plan_traj_stats[1:, 2] = plan_traj[:, 2]
     else:
         # If heading is not provided, use the waypoints to compute heading.
         plan_traj_stats[1:, :2] = plan_traj[:, [1,0]]
